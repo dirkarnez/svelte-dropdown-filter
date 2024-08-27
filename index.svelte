@@ -1,36 +1,35 @@
 <script>
-	import Link from './Link.svelte';
-
-	
 	let menuOpen = false;
 	let inputValue = "";
 	$:console.log(inputValue)
 	
 	const menuItems = ["About", "Base", "Blog", "Contact", "Custom", "Support", "Tools", "Boats", "Cars", "Bikes", "Sheds", "Billygoats", "Zebras", "Tennis Shoes", "New Zealand"];
 	let filteredItems = [];
-	
+	// 
 	const handleInput = () => {
-		return filteredItems = menuItems.filter(item => item.toLowerCase().match(inputValue.toLowerCase()));	
+		return filteredItems = !!inputValue ? 
+			menuItems.filter(item => item.toLowerCase().match(inputValue.toLowerCase()))
+			:
+			[];	
 	}
 </script>
 
 
 <section class="dropdown">
-	<input type="text" placeholder="Search..." autocomplete="off" id="searchInput" bind:value={inputValue} on:click={() => menuOpen = !menuOpen} {menuOpen} on:input={handleInput}>
-<span id="search-icon">🔍</span>
-	
-  <div id="myDropdown" class:show={menuOpen} class="dropdown-content">		
-		<!-- MENU -->
-		{#if filteredItems.length > 0}
-			{#each filteredItems as item}
-				<div>{item}</div>
-			{/each}
-		{:else}
-			{#each menuItems as item}
-			<div>{item}</div>
-			{/each}
-		{/if}		
-  </div>	
+	<input type="text" placeholder="Search..." autocomplete="off" id="searchInput" 
+		bind:value={inputValue} 
+		on:focus={() => menuOpen = true}
+		on:focusout={() => menuOpen = false}
+		{menuOpen} on:input={handleInput}>
+		<span id="search-icon">🔍</span>
+		{#if Array.isArray(filteredItems) && filteredItems.length > 0}
+		  <div id="myDropdown" class:show={menuOpen} class="dropdown-content">		
+				<!-- MENU -->
+					{#each filteredItems as item}
+						<div>{item}</div>
+					{/each}
+		  </div>	
+		{/if}	
 </section>
 	
 	
